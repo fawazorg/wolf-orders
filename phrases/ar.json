@@ -1,0 +1,86 @@
+[
+  {
+    "name": "orders_command_default",
+    "value": "!طلب"
+  },
+  {
+    "name": "orders_command_check",
+    "value": "تحقق"
+  },
+  {
+    "name": "orders_command_join",
+    "value": "تنفيذ"
+  },
+  {
+    "name": "orders_command_help",
+    "value": "مساعدة"
+  },
+  {
+    "name": "orders_command_count",
+    "value": "احصائيات"
+  },
+  {
+    "name": "orders_default_message",
+    "value": "مرحبا بك في بوت طلبات.\n!طلب مساعدة"
+  },
+  {
+    "name": "orders_help_message",
+    "value": "مرحبا بك في بوت طلبات.\n!طلب تحقق <عضوية الروم> <عضوية المستخدم>\n!طلب تنفيذ <عضوية الغرفة>\n!طلب احصائيات"
+  },
+  {
+    "name": "orders_group_info",
+    "value": "🔎 معلومات عن غرفة : [{name}]"
+  },
+  {
+    "name": "orders_check_onwer",
+    "value": "الطلب من قبل مالك الروم"
+  },
+  {
+    "name": "orders_check_members_count",
+    "value": "عدد الاعضاء : {count}"
+  },
+  {
+    "name": "orders_check_status",
+    "value": "احصائيات اخر يوم : {count}"
+  },
+  {
+    "name": "orders_check_one_room",
+    "value": "طلب واحد لكل أونر"
+  },
+  {
+    "name": "orders_number_not_valid",
+    "value": "(n) فقط الارقام مسموح بها"
+  },
+  {
+    "name": "orders_group_not_found",
+    "value": "(n) لم نتمكن من إيجاد الغرفة"
+  },
+  {
+    "name": "orders_group_added",
+    "value": "(y) تم انشاء طلب للغرفة بنجاح"
+  },
+  {
+    "name": "orders_group_exists",
+    "value": "(n) يوجد طلب سابق للغرفة :\n\nتاريخ الطلب: {date}\nحالة الطلب: {stats}"
+  },
+  {
+    "name": "orders_order_not_found",
+    "value": "(n) لا يوجد طلب مسبق للغرفة."
+  },
+  {
+    "name": "orders_order_done",
+    "value": "(y) تم تنفيذ الطلب من قبل:\n {nickname} ({id})"
+  },
+  {
+    "name": "orders_command_admin_only",
+    "value": "(n) الامر يستخدم من قبل الادمن فقط"
+  },
+  {
+    "name": "orders_orders_not_found",
+    "value": "(n) لا توجد طلبات حاليا"
+  },
+  {
+    "name": "orders_orders_message",
+    "value": "📊 الاحصائيات\n\nاجمالي الطلبات : {total}\nالطلبات المنفذة : {COrders}\nالطلبات المعلقة : {POrders}"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "orders_command_default",
+    "value": "!orders"
+  },
+  {
+    "name": "orders_default_message",
+    "value": "Welcome to Orders Bot\n!orders help - display help menu"
+  }
+]
