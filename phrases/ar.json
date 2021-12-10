@@ -68,6 +68,10 @@
     "value": "(n) لا يوجد طلب مسبق للغرفة."
   },
   {
+    "name": "orders_order_already_joined",
+    "value": "(n) تم تنفيذ الطلب من قبل."
+  },
+  {
     "name": "orders_order_done",
     "value": "(y) تم تنفيذ الطلب من قبل:\n {nickname} ({id})"
   },

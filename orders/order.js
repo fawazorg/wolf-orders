@@ -6,13 +6,8 @@ const db = require("./db");
  * @param {import("wolf.js").CommandObject} command
  */
 const Check = async (command) => {
-  let gid = checkNumber(command.argument.split(" ")[0]);
-  let oid = checkNumber(command.argument.split(" ")[1] || command.sourceSubscriberId);
+  let gid = checkNumber(command.argument.trim());
   if (!gid) {
-    await reply(command, getPhrase("number_not_valid", command));
-    return;
-  }
-  if (!oid) {
     await reply(command, getPhrase("number_not_valid", command));
     return;
   }
@@ -21,19 +16,20 @@ const Check = async (command) => {
     await reply(command, getPhrase("group_not_found", command));
     return;
   }
-  let groupStats = await api.group().getStats(gid);
   let group_db = await db.findGroup(group.id);
   if (group_db.length !== 0) {
     await reply(command, groupExists(group_db, command));
     return;
   }
+  let ordersRoom = await api.group().getSubscriberList(command.targetGroupId);
+  let groupStats = await api.group().getStats(gid);
   let r = groupinfo(group, command);
-  r += OwnerCheck(group, oid, command);
+  r += OwnerCheck(group, ordersRoom, command);
   r += MemberCountCheck(group, command);
   r += StatsCheck(groupStats, command);
   r += await OneRoomCheck(group.owner.id, command);
   await reply(command, r);
-  if (await validToAdd(command, group, oid, groupStats)) {
+  if (await validToAdd(command, group, ordersRoom, groupStats)) {
     await db.addGroup(group.id, group.owner.id);
     await reply(command, getPhrase("group_added", command));
   }
@@ -43,7 +39,7 @@ const Check = async (command) => {
  * @param {import("wolf.js").CommandObject} command
  */
 const JoinBot = async (command) => {
-  let gid = checkNumber(command.argument);
+  let gid = checkNumber(command.argument.trim());
   if (!gid) {
     await reply(command, getPhrase("number_not_valid", command));
     return;
@@ -51,6 +47,10 @@ const JoinBot = async (command) => {
   let group_db = await db.findGroup(gid);
   if (group_db.length === 0) {
     await reply(command, getPhrase("order_not_found", command));
+    return;
+  }
+  if (group_db[0].joined) {
+    await reply(command, getPhrase("order_already_joined", command));
     return;
   }
   await db.groupJoind(gid, command.sourceSubscriberId);
@@ -71,12 +71,12 @@ const Count = async (command) => {
 /**
  *
  * @param {import("wolf.js").GroupObject} group
- * @param {Number} ownerID
+ * @param {import("wolf.js").GroupSubscriberObject[]} ordersGroup
  * @param {import("wolf.js").CommandObject} command
  */
-const OwnerCheck = (group, ownerID, command) => {
+const OwnerCheck = (group, ordersGroup, command) => {
   let phrase = getPhrase("check_onwer", command);
-  if (ownerID === group.owner.id) {
+  if (ordersGroup.some(s=>s.id === group.owner.id)) {
     return `\n(y) ${phrase}`;
   }
   return `\n(n) ${phrase}`;
@@ -182,14 +182,14 @@ const PrrintOrders = (command, orders) => {
  *
  * @param {import("wolf.js").CommandObject} command
  * @param {import("wolf.js").GroupObject} group
- * @param {Number} oid
+ * @param {import("wolf.js").GroupSubscriberObject[]} ordersGroup
  * @param {import("wolf.js").GroupStatsObject} groupStats
  */
-const validToAdd = async (command, group, oid, groupStats) => {
+const validToAdd = async (command, group, ordersGroup, groupStats) => {
   let add = false;
   let owner = await db.findOwner(group.owner.id);
   if (
-    oid === group.owner.id &&
+    ordersGroup.some(s=>s.id === group.owner.id) &&
     group.members >= 500 &&
     groupStats.trends[1].lineCount >= 500 &&
     owner.length === 0
