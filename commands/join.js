@@ -16,7 +16,7 @@ Join = async (api, command) => {
     .hasCapability(
       command.targetGroupId,
       command.sourceSubscriberId,
-      Constants.Capability.ADMIN,
+      Constants.Capability.MOD,
       true
     );
   if (okay) {

@@ -28,6 +28,8 @@ const Check = async (command) => {
   r += MemberCountCheck(group, command);
   r += StatsCheck(groupStats, command);
   r += await OneRoomCheck(group.owner.id, command);
+  r += CheckEntryLevel(group, command);
+  r += CheckPassworded(group, command);
   await reply(command, r);
   if (await validToAdd(command, group, ordersRoom, groupStats)) {
     await db.addGroup(group.id, group.owner.id);
@@ -76,7 +78,7 @@ const Count = async (command) => {
  */
 const OwnerCheck = (group, ordersGroup, command) => {
   let phrase = getPhrase("check_onwer", command);
-  if (ordersGroup.some(s=>s.id === group.owner.id)) {
+  if (ordersGroup.some((s) => s.id === group.owner.id)) {
     return `\n(y) ${phrase}`;
   }
   return `\n(n) ${phrase}`;
@@ -101,10 +103,13 @@ const MemberCountCheck = (group, command) => {
  * @param {import("wolf.js").CommandObject} command
  */
 const StatsCheck = (groupStats, command) => {
-  let phrase = api.utility().string().replace(getPhrase("check_status", command), {
-    count: groupStats.trends[1].lineCount,
-  });
-  if (groupStats.trends[1].lineCount >= 500) {
+  let phrase = api
+    .utility()
+    .string()
+    .replace(getPhrase("check_status", command), {
+      count: groupStats?.trends[1]?.lineCount ?? "0",
+    });
+  if (groupStats && groupStats.trends[1].lineCount >= 500) {
     return `\n(y) ${phrase}`;
   }
   return `\n(n) ${phrase}`;
@@ -134,7 +139,32 @@ const groupinfo = (group, command) => {
   });
   return `${phrase}\n`;
 };
-
+/**
+ *
+ * @param {import("wolf.js").GroupObject} group
+ * @param {import("wolf.js").CommandObject} command
+ */
+const CheckEntryLevel = (group, command) => {
+  let phrase = api.utility().string().replace(getPhrase("check_entry_level", command), {
+    level: group.extended.entryLevel,
+  });
+  if (group.extended.entryLevel > 6) {
+    return `\n⚠️ ${phrase}`;
+  }
+  return "";
+};
+/**
+ *
+ * @param {import("wolf.js").GroupObject} group
+ * @param {import("wolf.js").CommandObject} command
+ */
+const CheckPassworded = (group, command) => {
+  let phrase = getPhrase("check_passworded", command);
+  if (group.extended.passworded) {
+    return `\n⚠️ ${phrase}`;
+  }
+  return "";
+};
 /**
  *
  * @param {*} group
@@ -189,8 +219,9 @@ const validToAdd = async (command, group, ordersGroup, groupStats) => {
   let add = false;
   let owner = await db.findOwner(group.owner.id);
   if (
-    ordersGroup.some(s=>s.id === group.owner.id) &&
+    ordersGroup.some((s) => s.id === group.owner.id) &&
     group.members >= 500 &&
+    groupStats &&
     groupStats.trends[1].lineCount >= 500 &&
     owner.length === 0
   ) {

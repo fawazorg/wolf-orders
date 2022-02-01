@@ -44,6 +44,14 @@
     "value": "احصائيات اخر يوم : {count}"
   },
   {
+    "name": "orders_check_entry_level",
+    "value": "مستوى الدخول : {level}"
+  },
+  {
+    "name": "orders_check_passworded",
+    "value": "الروم محمي بكلمة مرور"
+  },
+  {
     "name": "orders_check_one_room",
     "value": "طلب واحد لكل أونر"
   },
